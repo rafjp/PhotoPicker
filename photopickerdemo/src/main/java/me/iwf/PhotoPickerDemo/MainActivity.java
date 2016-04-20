@@ -2,6 +2,7 @@ package me.iwf.PhotoPickerDemo;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -26,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
     Button(R.id.button),
     ButtonNoCamera(R.id.button_no_camera),
     ButtonOnePhoto(R.id.button_one_photo),
-    ButtonPhotoGif(R.id.button_photo_gif)
+    ButtonPhotoGif(R.id.button_photo_gif),
+    ButtonNoImageOnTap(R.id.button_no_image_on_tap)
     ;
 
     @IdRes final int mViewId;
@@ -79,6 +81,13 @@ public class MainActivity extends AppCompatActivity {
       @Override
       public void onClick(View v) {
         checkPermission(RequestCode.ButtonPhotoGif);
+      }
+    });
+
+    findViewById(R.id.button_no_image_on_tap).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        checkPermission(RequestCode.ButtonNoImageOnTap);
       }
     });
 
@@ -200,6 +209,24 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_CODE);
         break;
       }
+
+      case R.id.button_no_image_on_tap : {
+        PhotoPickerIntent intent = new PhotoPickerIntent(MainActivity.this);
+        intent.setShowCamera(false);
+        intent.setShowImageOnTap(false);
+        intent.setShowImageCount(false);
+        intent.setShowGallerySelector(false);
+        intent.setPhotoCount(5);
+        intent.setBackgroundColor(0xFF000000);
+        intent.setSelectedBorderColor(0xFFff0000);
+
+        intent.setBackgroundColor(Color.YELLOW);
+        intent.setImagePadding(R.dimen.image_padding_dp_four);
+
+        startActivityForResult(intent, REQUEST_CODE);
+        break;
+      }
+
     }
   }
 }

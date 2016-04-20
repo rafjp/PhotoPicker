@@ -5,4 +5,7 @@
   <dimen name="item_photo_size">80dip</dimen>
   <dimen name="item_camera_size">80dip</dimen>
 
+  <dimen name="image_padding_dp_one">1dip</dimen>
+  <dimen name="image_padding_dp_four">4dip</dimen>
+
 </resources>

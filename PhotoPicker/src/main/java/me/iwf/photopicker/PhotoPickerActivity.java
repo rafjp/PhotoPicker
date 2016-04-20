@@ -3,6 +3,7 @@ package me.iwf.photopicker;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.DimenRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,6 +30,13 @@ public class PhotoPickerActivity extends AppCompatActivity {
   public final static String KEY_SELECTED_PHOTOS = "SELECTED_PHOTOS";
   public final static String EXTRA_GRID_COLUMN   = "column";
 
+  public final static String EXTRA_SHOW_IMAGE_ON_TAP = "EXTRA_SHOW_IMAGE_ON_TAP";
+  public final static String EXTRA_SHOW_IMAGE_COUNT = "EXTRA_SHOW_IMAGE_COUNT";
+  public final static String EXTRA_SHOW_GALLERY_SELECTOR = "EXTRA_SHOW_GALLERY_SELECTOR";
+  public final static String EXTRA_SELECTED_BORDER_COLOR = "EXTRA_SELECTED_BORDER_COLOR";
+  public final static String EXTRA_BACKGROUND_COLOR= "EXTRA_BACKGROUND_COLOR";
+  public final static String EXTRA_IMAGE_PADDING= "EXTRA_IMAGE_PADDING";
+
   private MenuItem menuDoneItem;
 
   public final static int DEFAULT_MAX_COUNT = 9;
@@ -42,12 +50,16 @@ public class PhotoPickerActivity extends AppCompatActivity {
   private boolean showGif = false;
   private int columnNumber = DEFAULT_COLUMN_NUMBER;
 
+  private boolean showImageOnTap = true;
+  private boolean showImageCount = true;
+  private boolean showGallerySelector = true;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     boolean showCamera = getIntent().getBooleanExtra(EXTRA_SHOW_CAMERA, true);
     boolean showGif    = getIntent().getBooleanExtra(EXTRA_SHOW_GIF, false);
+
     setShowGif(showGif);
 
     setContentView(R.layout.activity_photo_picker);
@@ -67,11 +79,27 @@ public class PhotoPickerActivity extends AppCompatActivity {
     maxCount = getIntent().getIntExtra(EXTRA_MAX_COUNT, DEFAULT_MAX_COUNT);
     columnNumber = getIntent().getIntExtra(EXTRA_GRID_COLUMN, DEFAULT_COLUMN_NUMBER);
 
-    pickerFragment = PhotoPickerFragment.newInstance(showCamera, showGif, columnNumber, maxCount);
+    showImageOnTap = getIntent().getBooleanExtra(EXTRA_SHOW_IMAGE_ON_TAP, true);
+    showImageCount = getIntent().getBooleanExtra(EXTRA_SHOW_IMAGE_COUNT, true);
+    showGallerySelector = getIntent().getBooleanExtra(EXTRA_SHOW_GALLERY_SELECTOR, true);
+
+    int selectedBorderColor = getIntent().getIntExtra(EXTRA_SELECTED_BORDER_COLOR, R.color.__picker_item_photo_border_selected);
+    int backgroundColor = getIntent().getIntExtra(EXTRA_BACKGROUND_COLOR, 0x00000000);
+
+    @DimenRes int imagePadding = getIntent().getIntExtra(EXTRA_IMAGE_PADDING, 0);
+
+    pickerFragment = PhotoPickerFragment.newInstance(showCamera, showGif, columnNumber, maxCount,
+            showImageOnTap,
+            showImageCount,
+            showGallerySelector,
+            selectedBorderColor,
+            backgroundColor,
+            imagePadding);
+
     getSupportFragmentManager()
-        .beginTransaction()
-        .replace(R.id.container, pickerFragment)
-        .commit();
+            .beginTransaction()
+            .replace(R.id.container, pickerFragment)
+            .commit();
     getSupportFragmentManager().executePendingTransactions();
 
     pickerFragment.getPhotoGridAdapter().setOnItemCheckListener(new OnItemCheckListener() {
@@ -92,10 +120,15 @@ public class PhotoPickerActivity extends AppCompatActivity {
 
         if (total > maxCount) {
           Toast.makeText(getActivity(), getString(R.string.__picker_over_max_count_tips, maxCount),
-              LENGTH_LONG).show();
+                  LENGTH_LONG).show();
           return false;
         }
-        menuDoneItem.setTitle(getString(R.string.__picker_done_with_count, total, maxCount));
+
+        if (showImageCount) {
+          menuDoneItem.setTitle(getString(R.string.__picker_done_with_count, total, maxCount));
+        } else {
+          menuDoneItem.setTitle(getString(R.string.__picker_done));
+        }
         return true;
       }
     });
@@ -125,10 +158,10 @@ public class PhotoPickerActivity extends AppCompatActivity {
   public void addImagePagerFragment(ImagePagerFragment imagePagerFragment) {
     this.imagePagerFragment = imagePagerFragment;
     getSupportFragmentManager()
-        .beginTransaction()
-        .replace(R.id.container, this.imagePagerFragment)
-        .addToBackStack(null)
-        .commit();
+            .beginTransaction()
+            .replace(R.id.container, this.imagePagerFragment)
+            .addToBackStack(null)
+            .commit();
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {

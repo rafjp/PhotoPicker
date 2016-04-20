@@ -26,4 +26,24 @@
       android:layout_height="wrap_content"
       />
 
+  <RelativeLayout android:id="@+id/vg_photo_selection_number_container"
+      android:layout_margin="1dip"
+      android:visibility="gone"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentRight="true"
+      android:background="@color/__picker_item_photo_border_selected"
+      android:layout_width="30dp"
+      android:layout_height="30dp">
+
+    <TextView android:id="@+id/tv_photo_selection_number"
+        android:text="00"
+        android:textSize="18sp"
+        android:layout_centerInParent="true"
+        android:textColor="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold" />
+
+  </RelativeLayout>
+
 </me.iwf.photopicker.widget.SquareItemLayout>
