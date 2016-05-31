@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
       mViewId = viewId;
     }
   }
+
   RecyclerView recyclerView;
   PhotoAdapter photoAdapter;
 

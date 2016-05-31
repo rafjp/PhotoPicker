@@ -84,6 +84,12 @@ public class ImagePagerFragment extends Fragment {
 
 
   public void setPhotos(List<String> paths, int currentItem) {
+
+    if (paths == null) {
+      mViewPager.getAdapter().notifyDataSetChanged();
+      return;
+    }
+
     this.paths.clear();
     this.paths.addAll(paths);
     this.currentItem = currentItem;
